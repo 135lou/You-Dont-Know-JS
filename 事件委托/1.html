@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<ul id="list">
+    <li class="class-1" >item 1</li>
+    <li>item 2</li>
+    <li class="class-1">item 3</li>
+    <li>item n</li>
+</ul>
+</body>
+<!--
+    局限性：
+        当然，事件委托也是有一定局限性的；
+        比如 focus、blur 之类的事件本身没有事件冒泡机制，所以无法委托；
+        mousemove、mouseout 这样的事件，虽然有事件冒泡，但是只能不断通过位置去计算定位，对性能消耗高，因此也是不适合于事件委托的；
+-->
+<script>
+    // document.getElementById('list').addEventListener('click', function (e) {
+    //     // 兼容性处理
+    //     var event = e || window.event;
+    //     var target = event.target || event.srcElement;
+    //     // 判断是否匹配目标元素
+    //     if (target.nodeName.toLocaleLowerCase() === 'li') {
+    //         console.log('the content is: ', target.innerHTML);
+    //     }
+    // });
+//    element matches
+    if (!Element.prototype.matches) {
+        Element.prototype.matches =
+            Element.prototype.matchesSelector ||
+            Element.prototype.mozMatchesSelector ||
+            Element.prototype.msMatchesSelector ||
+            Element.prototype.oMatchesSelector ||
+            Element.prototype.webkitMatchesSelector ||
+            function(s) {
+                var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                    i = matches.length;
+                while (--i >= 0 && matches.item(i) !== this) {}
+                return i > -1;
+            };
+    }
+    document.getElementById('list').addEventListener('click', function (e) {
+        // 兼容性处理
+        var event = e || window.event;
+        var target = event.target || event.srcElement;
+        if (target.matches('li.class-1')) {
+            console.log('the content is: ', target.innerHTML);
+        }
+    });
+</script>
+</html>
